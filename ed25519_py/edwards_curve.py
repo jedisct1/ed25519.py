@@ -1,5 +1,7 @@
 """Edwards curve operations for Ed25519."""
 
+from typing import Optional
+
 from .constants import B_X, B_Y, D, P
 from .field_arithmetic import (
     field_add,
@@ -17,7 +19,7 @@ from .field_arithmetic import (
 class EdwardsPoint:
     """Point on the twisted Edwards curve: -x^2 + y^2 = 1 + d*x^2*y^2."""
 
-    def __init__(self, x: int, y: int, z: int = 1, t: int = None):
+    def __init__(self, x: int, y: int, z: int = 1, t: Optional[int] = None):
         """Initialize a point with coordinates.
 
         Can use either:
@@ -92,7 +94,7 @@ class EdwardsPoint:
             field_mul(self.x, r),
             field_mul(self.y, r),
             field_mul(self.z, r),
-            field_mul(self.t, r) if hasattr(self, "t") else None,
+            field_mul(self.t, r) if hasattr(self, "t") and self.t is not None else None,
         )
 
 
@@ -184,7 +186,7 @@ def scalar_multiply(k: int, P: EdwardsPoint) -> EdwardsPoint:
     return result
 
 
-def scalar_multiply_split(k: int, P: EdwardsPoint, split: tuple[int, int] = None) -> EdwardsPoint:
+def scalar_multiply_split(k: int, P: EdwardsPoint, split: Optional[tuple[int, int]] = None) -> EdwardsPoint:
     """Multiply a point by a scalar using scalar splitting for side-channel resistance.
 
     Instead of computing k*P directly, we split k = k1 + k2 where k1 is random,
