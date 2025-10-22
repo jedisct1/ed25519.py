@@ -44,18 +44,12 @@ def test_custom_vector():
     print("-" * 40)
 
     # Check public key length
-    if len(public_key) != 32:
-        print(f"❌ Invalid public key length: {len(public_key)} bytes (expected 32)")
-        return False
-    else:
-        print(f"✓ Public key length: {len(public_key)} bytes")
+    assert len(public_key) == 32, f"Invalid public key length: {len(public_key)} bytes (expected 32)"
+    print(f"✓ Public key length: {len(public_key)} bytes")
 
     # Check signature length
-    if len(signature) != 64:
-        print(f"❌ Invalid signature length: {len(signature)} bytes (expected 64)")
-        return False
-    else:
-        print(f"✓ Signature length: {len(signature)} bytes")
+    assert len(signature) == 64, f"Invalid signature length: {len(signature)} bytes (expected 64)"
+    print(f"✓ Signature length: {len(signature)} bytes")
 
     # Check if public key is canonical
     if not is_canonical_point(public_key):
@@ -119,10 +113,9 @@ def test_custom_vector():
 
     if result_cofactored or result_cofactorless:
         print("✅ Signature verification succeeded")
-        return True
     else:
         print("❌ Signature verification failed")
-        return False
+    assert result_cofactored or result_cofactorless, "Signature verification failed"
 
 
 def add_to_test_suite():
@@ -148,6 +141,9 @@ def test_custom_vector_in_suite():
 
 
 if __name__ == "__main__":
-    success = test_custom_vector()
-    if success:
+    try:
+        test_custom_vector()
+    except AssertionError:
+        print("Custom vector test failed")
+    else:
         add_to_test_suite()
