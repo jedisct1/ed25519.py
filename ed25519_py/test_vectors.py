@@ -4,8 +4,8 @@ from .key_generation import derive_public_key, generate_keypair
 from .paper_test_vectors_official import PAPER_TEST_VECTORS_OFFICIAL
 from .signing import sign
 from .test_mode_verification import (
-    test_mode_verify_cofactored,
-    test_mode_verify_cofactorless,
+    verify_cofactored_test_mode,
+    verify_cofactorless_test_mode,
 )
 from .test_utils import hex_to_bytes
 from .verification import verify, verify_cofactorless
@@ -149,14 +149,14 @@ def test_paper_vectors():
 
         # Test cofactored verification (using test mode for paper compliance)
         try:
-            result_cofactored = test_mode_verify_cofactored(public_key, signature, message)
+            result_cofactored = verify_cofactored_test_mode(public_key, signature, message)
         except Exception as e:
             result_cofactored = False
             print(f"  - Cofactored verification raised exception: {e}")
 
         # Test cofactorless verification (using test mode for paper compliance)
         try:
-            result_cofactorless = test_mode_verify_cofactorless(public_key, signature, message)
+            result_cofactorless = verify_cofactorless_test_mode(public_key, signature, message)
         except Exception as e:
             result_cofactorless = False
             print(f"  - Cofactorless verification raised exception: {e}")

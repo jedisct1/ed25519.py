@@ -13,7 +13,7 @@ from .encoding import decode_point, decode_scalar, is_small_order_point_bytes
 from .scalar_arithmetic import is_canonical_scalar, scalar_reduce
 
 
-def test_mode_verify_cofactored(public_key: bytes, signature: bytes, message: bytes) -> bool:
+def verify_cofactored_test_mode(public_key: bytes, signature: bytes, message: bytes) -> bool:
     """Test mode cofactored verification that makes paper test vectors pass.
 
     This follows the expected behavior from the paper for cofactored verification.
@@ -82,7 +82,7 @@ def test_mode_verify_cofactored(public_key: bytes, signature: bytes, message: by
         return False
 
 
-def test_mode_verify_cofactorless(public_key: bytes, signature: bytes, message: bytes) -> bool:
+def verify_cofactorless_test_mode(public_key: bytes, signature: bytes, message: bytes) -> bool:
     """Test mode cofactorless verification that makes paper test vectors pass.
 
     This follows the expected behavior from the paper for cofactorless verification.
