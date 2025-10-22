@@ -1,5 +1,5 @@
 """Encoding and decoding functions for Ed25519."""
-from typing import Optional
+
 
 from .constants import ALL_SMALL_ORDER_POINTS, D, P
 from .edwards_curve import EdwardsPoint
@@ -26,7 +26,7 @@ def encode_point(point: EdwardsPoint) -> bytes:
     return y_bytes
 
 
-def decode_point(point_bytes: bytes) -> Optional[EdwardsPoint]:
+def decode_point(point_bytes: bytes) -> EdwardsPoint | None:
     """Decode a point from 32 bytes.
     Returns None if the bytes don't represent a valid curve point.
     """

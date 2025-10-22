@@ -80,7 +80,7 @@ def test_batch_verification():
     messages = [f"Message {i}".encode() for i in range(n)]
 
     public_keys = [kp[1] for kp in keypairs]
-    signatures = [sign(kp[0], msg) for kp, msg in zip(keypairs, messages)]
+    signatures = [sign(kp[0], msg) for kp, msg in zip(keypairs, messages, strict=False)]
 
     # Test valid batch
     assert batch_verify(public_keys, signatures, messages), "Valid batch should verify"

@@ -1,5 +1,5 @@
 """Edwards curve operations for Ed25519."""
-from typing import Optional
+
 
 from .constants import B_X, B_Y, D, P
 from .field_arithmetic import (
@@ -18,7 +18,7 @@ from .field_arithmetic import (
 class EdwardsPoint:
     """Point on the twisted Edwards curve: -x^2 + y^2 = 1 + d*x^2*y^2."""
 
-    def __init__(self, x: int, y: int, z: int = 1, t: Optional[int] = None):
+    def __init__(self, x: int, y: int, z: int = 1, t: int | None = None):
         """Initialize a point with coordinates.
 
         Can use either:
@@ -186,7 +186,7 @@ def scalar_multiply(k: int, P: EdwardsPoint) -> EdwardsPoint:
 
 
 def scalar_multiply_split(
-    k: int, P: EdwardsPoint, split: Optional[tuple[int, int]] = None
+    k: int, P: EdwardsPoint, split: tuple[int, int] | None = None
 ) -> EdwardsPoint:
     """Multiply a point by a scalar using scalar splitting for side-channel resistance.
 
@@ -241,7 +241,7 @@ def point_compress(P: EdwardsPoint) -> bytes:
     return y_bytes
 
 
-def point_decompress(compressed: bytes) -> Optional[EdwardsPoint]:
+def point_decompress(compressed: bytes) -> EdwardsPoint | None:
     """Decompress a point from 32 bytes.
     Returns None if the bytes don't represent a valid curve point.
     """

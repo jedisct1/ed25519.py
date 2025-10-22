@@ -1,5 +1,5 @@
 """Unified arithmetic operations for Ed25519."""
-from typing import Optional
+
 
 from .constants import L, P
 
@@ -49,7 +49,7 @@ class FieldOps:
         return a % P
 
     @staticmethod
-    def sqrt(a: int) -> Optional[int]:
+    def sqrt(a: int) -> int | None:
         if a == 0:
             return 0
 

@@ -4,20 +4,20 @@ A pure Python implementation of the Ed25519 digital signature scheme, following 
 
 ## Features
 
-- **Pure Python**: No external cryptographic dependencies (except `hashlib` for SHA-512)
-- **Complete**: Includes key generation, signing, verification, and batch verification
-- **Well-tested**: Verified against RFC 8032 test vectors
-- **Standards compliant**: Follows the Ed25519 specification
-- **Side-channel resistant**: Optional signing functions with protection against timing attacks
+- Pure Python: No external cryptographic dependencies (except `hashlib` for SHA-512)
+- Complete: Includes key generation, signing, verification, and batch verification
+- Well-tested: Verified against RFC 8032 test vectors
+- Standards compliant: Follows the Ed25519 specification
+- Side-channel resistant: Optional signing functions with protection against timing attacks
 
 ## Security Properties
 
 This implementation provides:
 
-1. **SUF-CMA Security**: Rejects non-canonical scalar encodings (S ≥ L)
-2. **SBS Security**: Rejects small order public keys (order 1, 2, 4, or 8)
-3. **Canonical Validation**: Rejects non-canonical point encodings
-4. **Cofactored Verification**: Uses the equation `8(S·B) = 8R + 8(h·A)` for compatibility with batch verification
+1. SUF-CMA Security: Rejects non-canonical scalar encodings (S ≥ L)
+2. SBS Security: Rejects small order public keys (order 1, 2, 4, or 8)
+3. Canonical Validation: Rejects non-canonical point encodings
+4. Cofactored Verification: Uses the equation `8(S·B) = 8R + 8(h·A)` for compatibility with batch verification
 
 ## Installation
 
@@ -66,10 +66,10 @@ is_valid = verify(public_key, signature, message)
 ```
 
 The resistant signing functions use:
-- **Scalar splitting**: Splits scalar multiplication into randomized parts
-- **Coordinate randomization**: Randomizes projective coordinates during point operations
-- **~50% performance overhead**: Acceptable trade-off for enhanced security
-- **Deterministic output**: Same signature for same input (maintains Ed25519 properties)
+- Scalar splitting: Splits scalar multiplication into randomized parts
+- Coordinate randomization: Randomizes projective coordinates during point operations
+- ~50% performance overhead: Acceptable trade-off for enhanced security
+- Deterministic output: Same signature for same input (maintains Ed25519 properties)
 
 ## API Reference
 

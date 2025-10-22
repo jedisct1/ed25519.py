@@ -44,7 +44,9 @@ def test_custom_vector():
     print("-" * 40)
 
     # Check public key length
-    assert len(public_key) == 32, f"Invalid public key length: {len(public_key)} bytes (expected 32)"
+    assert (
+        len(public_key) == 32
+    ), f"Invalid public key length: {len(public_key)} bytes (expected 32)"
     print(f"✓ Public key length: {len(public_key)} bytes")
 
     # Check signature length
