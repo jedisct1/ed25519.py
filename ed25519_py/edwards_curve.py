@@ -1,6 +1,5 @@
 """Edwards curve operations for Ed25519."""
 
-
 from .constants import B_X, B_Y, D, P
 from .field_arithmetic import (
     field_add,
@@ -151,8 +150,11 @@ def point_double(P: EdwardsPoint) -> EdwardsPoint:
 
 
 def point_neg(P: EdwardsPoint) -> EdwardsPoint:
-    """Negate a point: -(x, y) = (-x, y)."""
-    return EdwardsPoint(field_neg(P.x), P.y)
+    """Negate a point: -(x, y) = (-x, y).
+
+    Preserves projective coordinates: -(X, Y, Z, T) = (-X, Y, Z, -T).
+    """
+    return EdwardsPoint(field_neg(P.x), P.y, P.z, field_neg(P.t) if P.t is not None else None)
 
 
 def point_sub(P1: EdwardsPoint, P2: EdwardsPoint) -> EdwardsPoint:
@@ -226,17 +228,20 @@ def scalar_multiply_split(
 
 
 def point_equal(P1: EdwardsPoint, P2: EdwardsPoint) -> bool:
-    """Check if two points are equal."""
-    return P1.x == P2.x and P1.y == P2.y
+    """Check if two points are equal (handles projective coordinates)."""
+    return bool(P1 == P2)
 
 
 def point_compress(P: EdwardsPoint) -> bytes:
     """Compress a point to 32 bytes.
     Format: 255 bits for y-coordinate (little-endian) + 1 sign bit for x.
     """
-    y_bytes = P.y.to_bytes(32, "little")
-    # Set the sign bit if x is negative (odd)
-    if field_is_negative(P.x):
+    if P.z != 1:
+        x, y = P.to_affine()
+    else:
+        x, y = P.x, P.y
+    y_bytes = y.to_bytes(32, "little")
+    if field_is_negative(x):
         y_bytes = y_bytes[:-1] + bytes([y_bytes[31] | 0x80])
     return y_bytes
 

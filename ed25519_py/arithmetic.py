@@ -1,6 +1,5 @@
 """Unified arithmetic operations for Ed25519."""
 
-
 from .constants import L, P
 
 

@@ -1,6 +1,5 @@
 """Encoding and decoding functions for Ed25519."""
 
-
 from .constants import ALL_SMALL_ORDER_POINTS, D, P
 from .edwards_curve import EdwardsPoint
 from .field_arithmetic import (
@@ -19,9 +18,12 @@ def encode_point(point: EdwardsPoint) -> bytes:
     """Encode an Edwards point as 32 bytes.
     Format: 255 bits for y-coordinate (little-endian) + 1 sign bit for x.
     """
-    y_bytes = point.y.to_bytes(32, "little")
-    # Set the sign bit (bit 255) if x is negative (odd)
-    if field_is_negative(point.x):
+    if point.z != 1:
+        x, y = point.to_affine()
+    else:
+        x, y = point.x, point.y
+    y_bytes = y.to_bytes(32, "little")
+    if field_is_negative(x):
         y_bytes = y_bytes[:-1] + bytes([y_bytes[31] | 0x80])
     return y_bytes
 

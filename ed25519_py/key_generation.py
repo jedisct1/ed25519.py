@@ -100,6 +100,6 @@ def is_valid_public_key(public_key: bytes) -> bool:
     2. Decode to a valid curve point
     3. Not be a small order point
     """
-    from encoding import validate_point_bytes
+    from .encoding import validate_point_bytes
 
     return bool(validate_point_bytes(public_key))
