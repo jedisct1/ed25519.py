@@ -157,11 +157,11 @@ def batch_verify(public_keys: list[bytes], signatures: list[bytes], messages: li
     import secrets
 
     n = len(public_keys)
-    if n == 0:
-        return True
-
     if len(signatures) != n or len(messages) != n:
         raise ValueError("Lists must have the same length")
+
+    if n == 0:
+        return True
 
     # Step 1: Perform individual checks on each signature
     z_values = []
@@ -211,8 +211,8 @@ def batch_verify(public_keys: list[bytes], signatures: list[bytes], messages: li
         h = int.from_bytes(h_hash, "little")
         h_values.append(scalar_reduce(h))
 
-        # Sample random z_i (128 bits)
-        z = int.from_bytes(secrets.token_bytes(16), "little")
+        # Ensure every signature contributes to the batch equation.
+        z = secrets.randbelow((1 << 128) - 1) + 1
         z_values.append(z)
 
     # Step 2: Compute the batch equation

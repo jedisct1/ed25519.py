@@ -59,6 +59,10 @@ def decode_point(point_bytes: bytes) -> EdwardsPoint | None:
     if x is None:
         return None
 
+    # Reject the non-canonical negative-zero encoding.
+    if x == 0 and sign == 1:
+        return None
+
     # Choose the correct sign for x
     if field_is_negative(x) != sign:
         x = P - x

@@ -277,6 +277,10 @@ def point_decompress(compressed: bytes) -> EdwardsPoint | None:
     if x is None:
         return None
 
+    # Reject the non-canonical negative-zero encoding.
+    if x == 0 and sign == 1:
+        return None
+
     # Choose the correct sign
     if field_is_negative(x) != sign:
         x = field_neg(x)

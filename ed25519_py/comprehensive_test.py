@@ -1,10 +1,11 @@
 """Comprehensive testing of Ed25519 implementation."""
 
 import time
+from unittest.mock import patch
 
 from .constants import L, P
-from .edwards_curve import BASE_POINT, IDENTITY, scalar_multiply
-from .encoding import is_canonical_point
+from .edwards_curve import BASE_POINT, IDENTITY, point_decompress, scalar_multiply
+from .encoding import decode_point, encode_point, encode_scalar, is_canonical_point
 from .key_generation import generate_keypair
 from .scalar_arithmetic import is_canonical_scalar
 from .signing import sign
@@ -54,6 +55,21 @@ def test_canonicity_checks():
     print("✓ Point canonicity checks")
 
 
+def test_negative_zero_rejection():
+    """Reject the forbidden sign bit on a zero x-coordinate."""
+    print("\nTesting negative-zero point rejection...")
+
+    negative_zero = bytes([1]) + bytes(30) + bytes([0x80])
+    assert decode_point(negative_zero) is None, "Negative zero must not decode"
+    assert point_decompress(negative_zero) is None, "Negative zero must not decompress"
+
+    forged_signature = encode_point(BASE_POINT) + encode_scalar(1)
+    assert not verify(
+        negative_zero, forged_signature, b"forged"
+    ), "Negative-zero identity encoding must not enable signature forgery"
+    print("✓ Negative-zero point encodings are rejected")
+
+
 def test_base_point_order():
     """Test that the base point has the correct order."""
     print("\nTesting base point order...")
@@ -101,6 +117,20 @@ def test_batch_verification():
         public_keys, signatures, bad_messages
     ), "Batch with wrong message should fail"
     print("✓ Batch verification rejects wrong message")
+
+    with patch("secrets.randbelow", return_value=0):
+        assert not batch_verify(
+            public_keys, signatures, bad_messages
+        ), "A zero sampler result must not remove an invalid signature"
+    print("✓ Batch verification uses non-zero coefficients")
+
+    try:
+        batch_verify([], [signatures[0]], [])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched lists must fail even when public_keys is empty")
+    print("✓ Batch verification rejects all mismatched list lengths")
 
 
 def test_signature_malleability():
@@ -229,6 +259,7 @@ def run_comprehensive_tests():
 
     test_deterministic_signatures()
     test_canonicity_checks()
+    test_negative_zero_rejection()
     test_base_point_order()
     test_batch_verification()
     test_signature_malleability()
